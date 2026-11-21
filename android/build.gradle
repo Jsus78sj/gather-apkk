@@ -1,0 +1,30 @@
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+rootProject.buildDir = "../build"
+subprojects {
+    project.buildDir = "${rootProject.buildDir}/${project.name}"
+}
+
+// file_picker يُبنى على API 34 لكن flutter_plugin_android_lifecycle يطلب 36 أو أحدث،
+// لذلك نفرض compileSdk = 36 على كل وحدات الـ plugins.
+// يجب أن يأتي هذا الكتلة قبل evaluationDependsOn.
+subprojects {
+    afterEvaluate { project ->
+        if (project.hasProperty("android")) {
+            project.android.compileSdk = 36
+        }
+    }
+}
+
+subprojects {
+    project.evaluationDependsOn(":app")
+}
+
+tasks.register("clean", Delete) {
+    delete rootProject.buildDir
+}
