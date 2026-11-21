@@ -379,9 +379,6 @@ class _RepoBrowserScreenState extends ConsumerState<RepoBrowserScreen> {
   // Create / upload / bookmarks (phase 10)
   // ---------------------------------------------------------------------------
 
-  bool get _canWrite =>
-      ref.read(repoBrowserControllerProvider).target?.repo.canPush ?? false;
-
   /// Handles a failed write: when branch protection rejected the push, offers
   /// to apply the very same ops on a fresh branch and open a pull request.
   Future<void> _handleCommitFailure(
