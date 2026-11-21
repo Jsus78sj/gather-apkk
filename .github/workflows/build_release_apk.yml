@@ -29,6 +29,8 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
+          # Cache ~/.gradle so later runs do not re-download every artifact.
+          cache: 'gradle'
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
@@ -62,15 +64,27 @@ jobs:
           storeFile=github_nexus_release.jks
           EOF
 
+      # Maven Central sometimes answers HTTP 429 (Too Many Requests) to shared
+      # CI runners. That is transient, so retry the build a few times.
       - name: Build split-per-ABI release APKs
         run: |
-          flutter build apk --release --split-per-abi \
-            --obfuscate --split-debug-info=build/debug-symbols
+          for attempt in 1 2 3; do
+            flutter build apk --release --split-per-abi \
+              --obfuscate --split-debug-info=build/debug-symbols && exit 0
+            echo "::warning::Build attempt $attempt failed; retrying in 60s"
+            sleep 60
+          done
+          exit 1
 
       - name: Build universal release APK
         run: |
-          flutter build apk --release \
-            --obfuscate --split-debug-info=build/debug-symbols
+          for attempt in 1 2 3; do
+            flutter build apk --release \
+              --obfuscate --split-debug-info=build/debug-symbols && exit 0
+            echo "::warning::Build attempt $attempt failed; retrying in 60s"
+            sleep 60
+          done
+          exit 1
 
       - name: Generate SHA-256 checksums
         working-directory: build/app/outputs/flutter-apk
