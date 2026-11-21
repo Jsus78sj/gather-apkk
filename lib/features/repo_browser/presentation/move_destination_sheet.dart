@@ -297,7 +297,9 @@ class _MoveDestinationSheetState extends State<_MoveDestinationSheet> {
                                   final folder = _folders[idx];
                                   final full = _childPath(folder.name);
                                   final blocked = _isBlockedDestination(full);
-                                  return ListTile(
+                                  return Material(
+                                    type: MaterialType.transparency,
+                                    child: ListTile(
                                     dense: true,
                                     enabled: !blocked,
                                     leading: Icon(
@@ -340,6 +342,7 @@ class _MoveDestinationSheetState extends State<_MoveDestinationSheet> {
                                             _newSubfolderController.clear();
                                             _loadFolder(full);
                                           },
+                                    ),
                                   );
                                 },
                               ),
