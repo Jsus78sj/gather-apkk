@@ -124,7 +124,9 @@ class _RepoBookmarksSheetState extends ConsumerState<_RepoBookmarksSheet> {
                       ),
                       itemBuilder: (_, idx) {
                         final item = items[idx];
-                        return ListTile(
+                        return Material(
+                          type: MaterialType.transparency,
+                          child: ListTile(
                           dense: true,
                           leading: Icon(
                             item.isFolder
@@ -164,6 +166,7 @@ class _RepoBookmarksSheetState extends ConsumerState<_RepoBookmarksSheet> {
                                 )
                               : null,
                           onTap: () => Navigator.of(context).pop(item),
+                          ),
                         );
                       },
                     ),
